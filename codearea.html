@@ -1,0 +1,96 @@
+<html>
+
+<head>
+    <title>Js给文本框添加行号功能</title>
+
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    #codeTextarea {
+        width: 500px;
+        height: 310px;
+    }
+
+    .textAreaWithLines {
+        font-family: courier;
+        border: 1px solid #ddd;
+    }
+
+    .textAreaWithLines textarea,
+    .textAreaWithLines div {
+        border: 0px;
+        line-height: 120%;
+        font-size: 12px;
+    }
+
+    .lineObj {
+        color: #666;
+    }
+    </style>
+    <script type="text/javascript">
+    var lineObjOffsetTop = 2;
+
+    function createTextAreaWithLines(id) {
+        var el = document.createElement('DIV');
+        var ta = document.getElementById(id);
+        ta.parentNode.insertBefore(el, ta);
+        el.appendChild(ta);
+        el.className = 'textAreaWithLines';
+        el.style.width = (ta.offsetWidth + 30) + 'px';
+        ta.style.position = 'absolute';
+        ta.style.left = '30px';
+        el.style.height = (ta.offsetHeight + 2) + 'px';
+        el.style.overflow = 'hidden';
+        el.style.position = 'relative';
+        el.style.width = (ta.offsetWidth + 30) + 'px';
+        var lineObj = document.createElement('DIV');
+        lineObj.style.position = 'absolute';
+        lineObj.style.top = lineObjOffsetTop + 'px';
+        lineObj.style.left = '0px';
+        lineObj.style.width = '27px';
+        el.insertBefore(lineObj, ta);
+        lineObj.style.textAlign = 'right';
+        lineObj.className = 'lineObj';
+        var no = 1,
+            string = '1<br>';
+        ta.onkeydown = function(event) {
+            positionLineObj(lineObj, ta);
+            if(event.keyCode == 13)
+                lineObj.innerHTML += (++no) + '<br>'
+        };
+        ta.onmousedown = function() {
+            positionLineObj(lineObj, ta);
+        };
+        ta.onscroll = function() {
+            positionLineObj(lineObj, ta);
+        };
+        ta.onblur = function() {
+            positionLineObj(lineObj, ta);
+        };
+        ta.onfocus = function() {
+            positionLineObj(lineObj, ta);
+        };
+        ta.onmouseover = function() {
+            positionLineObj(lineObj, ta);
+        };
+        lineObj.innerHTML = string;
+    }
+
+    function positionLineObj(obj, ta) {
+        obj.style.top = (ta.scrollTop * -1 + lineObjOffsetTop) + 'px';
+    }
+    </script>
+</head>
+
+<body>
+    <form>
+        <textarea id="codeTextarea"></textarea>
+    </form>
+    <script type="text/javascript">
+    createTextAreaWithLines('codeTextarea');
+    </script>
+</body>
+
+</html>

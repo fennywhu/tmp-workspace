@@ -1,0 +1,41 @@
+
+.menu-container {
+    float: left;
+    width: 150px;
+    border: solid 1px;
+    padding: 5px;
+}
+
+.dropdown2 {
+    min-width: 302px;
+}
+.menu-section {
+    padding-left: 0px;
+}
+.menu-section > li {
+    list-style:none
+}
+.menu-section > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.menu-section > li > a:hover,
+.menu-section > li > a:focus {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+
+.menu-section > .active > a,
+.menu-section > .active > a:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #337ab7;
+    outline: 0;
+}
