@@ -63,8 +63,8 @@
         var index = $items.index($items.filter(':focus'));
 
         if (e.keyCode == 38 && index > 0) index--; // up
-            if (e.keyCode == 40 && index < $items.length - 1) index++; // down
-                if (!~index) index = 0;
+        if (e.keyCode == 40 && index < $items.length - 1) index++; // down
+        if (!~index) index = 0;
 
         $items.eq(index).trigger('focus');
     };
@@ -86,7 +86,7 @@
 
         if (!selector) {
             selector = $this.attr('href');
-            selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '');// strip for ie7
+            selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, ''); // strip for ie7
         }
 
         var $parent = selector && $(selector);
@@ -133,3 +133,56 @@
         .on('keydown.mn.dropdown.data-api', toggle + ', [role="menu"], [role="listbox"]', Dropdown.prototype.keydown);
 
 }(jQuery);
+
+(function($) {
+    var method = {
+        initSection: function(callBack, $section, url, params) {
+            $.ajax({
+                url: url,
+                data: params,
+            })
+            .done(function(res) {
+                callBack(res.rows, $section);
+            }); 
+        },
+        createLi: function(callBack, row) {
+            var htmlStr = '';
+            for (var i = row.length - 1; i >= 0; i--) {
+                htmlStr += callBack(row[i]);
+            };
+            return htmlStr;
+        }
+    }
+
+    var $advSection = $('.menu-section[data-type=adv]'),
+        $campSection = $('.menu-section[data-type=camp]');
+
+    method.initSection(function(rows, $section) {
+        var innerHtml = method.createLi(function(row) {
+            return '<li data-val=' + row.id + '><a href="javacript:void(0);">' + row.lite_name + '</a></li>';
+        }, rows);
+
+        $section.empty();
+        $section.append(innerHtml);
+    }, $advSection, 'adv.json', {param1: 'value1'});
+
+    $advSection.on('click', 'li', function(event) {
+        event.preventDefault();
+        
+        var $this = $(this),
+            id = $this.data('val');
+
+        $this.addClass('active').siblings('li').removeClass('active');
+
+        method.initSection(function(rows, $section) {
+        var innerHtml = method.createLi(function(row) {
+            return '<li data-val=' + row.id + '><a href="javacript:void(0);">' + row.name + '</a></li>';
+        }, rows);
+        
+        $section.empty();
+        $section.append(innerHtml);
+        }, $campSection, 'camp.json', {id: id});
+        return false;
+    });
+
+})(jQuery);
