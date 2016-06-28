@@ -1,13 +1,15 @@
 
 .menu-container {
     float: left;
-    width: 150px;
+    width: 300px;
     border: solid 1px;
     padding: 5px;
+    height: 400px;
+    overflow-y: scroll;
 }
 
 .dropdown2 {
-    min-width: 302px;
+    min-width: 602px;
 }
 .menu-section {
     padding-left: 0px;
@@ -25,8 +27,7 @@
     white-space: nowrap;
 }
 
-.menu-section > li > a:hover,
-.menu-section > li > a:focus {
+.menu-section > li > a:hover {
     color: #262626;
     text-decoration: none;
     background-color: #f5f5f5;

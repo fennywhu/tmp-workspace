@@ -28,7 +28,6 @@
             if (e.isDefaultPrevented()) return;
 
             $this.trigger('focus');
-            console.log(relatedTarget);
             $parent
                 .toggleClass('open')
                 .trigger('shown.mn.dropdown2', relatedTarget);
@@ -128,9 +127,9 @@
 
     $(document)
         .on('click.mn.dropdown.data-api', clearMenus)
-        .on('click.mn.dropdown.data-api', '.dropdown2 form', function(e) { e.stopPropagation(); })
+        .on('click.mn.dropdown.data-api', '.dropdown2', function(e) { e.stopPropagation(); })
         .on('click.mn.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-        .on('keydown.mn.dropdown.data-api', toggle + ', [role="menu"], [role="listbox"]', Dropdown.prototype.keydown);
+        // .on('keydown.mn.dropdown.data-api', toggle + ', [role="menu"], [role="listbox"]', Dropdown.prototype.keydown);
 
 }(jQuery);
 
@@ -149,13 +148,28 @@
             var htmlStr = '';
             for (var i = row.length - 1; i >= 0; i--) {
                 htmlStr += callBack(row[i]);
-            };
+            }
             return htmlStr;
+        },
+        filterInit: function($container, key) {
+            if(!key) {
+                $container.find('ul li').show();
+            }
+            key = key.toLowerCase();
+            $container.find('ul li').each(function(index, el) {
+                if($(el).data('val').toString().toLowerCase().indexOf(key) > -1 || $(el).text().toString().toLowerCase().indexOf(key) > -1){
+                    $(el).show();
+                } else {
+                    $(el).hide();
+                }
+            });
         }
-    }
+    };
 
-    var $advSection = $('.menu-section[data-type=adv]'),
-        $campSection = $('.menu-section[data-type=camp]');
+    var $advContainer = $('.menu-container[data-type=adv]'),
+        $campContainer = $('.menu-container[data-type=camp]'),
+        $advSection = $advContainer.find('.menu-section'),
+        $campSection = $campContainer.find('.menu-section');
 
     method.initSection(function(rows, $section) {
         var innerHtml = method.createLi(function(row) {
@@ -166,7 +180,16 @@
         $section.append(innerHtml);
     }, $advSection, 'adv.json', {param1: 'value1'});
 
-    $advSection.on('click', 'li', function(event) {
+    method.initSection(function(rows, $section) {
+        var innerHtml = method.createLi(function(row) {
+            return '<li data-val=' + row.id + '><a href="javacript:void(0);">' + row.name + '</a></li>';
+        }, rows);
+
+        $section.empty();
+        $section.append(innerHtml);
+    }, $campSection, 'camp.json', {param1: 'value1'});
+
+    $advContainer.on('click', 'ul li', function(event) {
         event.preventDefault();
         
         var $this = $(this),
@@ -175,13 +198,27 @@
         $this.addClass('active').siblings('li').removeClass('active');
 
         method.initSection(function(rows, $section) {
-        var innerHtml = method.createLi(function(row) {
-            return '<li data-val=' + row.id + '><a href="javacript:void(0);">' + row.name + '</a></li>';
-        }, rows);
-        
-        $section.empty();
-        $section.append(innerHtml);
+            var innerHtml = method.createLi(function(row) {
+                return '<li data-val=' + row.id + '><a href="javacript:void(0);">' + row.name + '</a></li>';
+            }, rows);
+
+            $section.empty();
+            $section.append(innerHtml);
         }, $campSection, 'camp.json', {id: id});
+        return false;
+    });
+    var lastTime;
+    $('.menu-container').on('keyup', 'input', function(event) {
+        event.preventDefault();
+        var val = $(this).val(),
+            $container = $(this).closest('.menu-container');
+
+        lastTime = event.timeStamp;
+        setTimeout(function(){
+            if(lastTime - event.timeStamp === 0){
+                method.filterInit($container, val);
+            }
+        },500);
         return false;
     });
 
